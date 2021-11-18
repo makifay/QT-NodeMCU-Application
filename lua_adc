@@ -1,0 +1,32 @@
+data_all = ","
+data_i=1
+x=100
+
+conn=net.createConnection(net.UDP, 0)
+conn:connect(8080,'10.17.199.51')
+
+function TimerFunc()
+
+
+x=adc.read(0)
+
+data_all = data_all .. x ..","
+
+data_i = data_i + 1
+if (data_i>100) then
+
+    data_i = 1
+    data_all = data_all .."\r\n"
+    print("Temp:"..data_all.."\r\n")
+
+    conn:send(data_all)
+    conn:on("sent",function(conn) print("Sending Data") end)
+    data_all=","
+
+end
+
+end
+
+-- Data sending via TimerFunc called by timer 
+tmr.alarm(0, 10, 1, function() TimerFunc() end)
+
